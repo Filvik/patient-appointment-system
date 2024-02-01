@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
-@Table(name = "appointments")
+@Table(name = "time_slots")
 @Data
-public class Appointment {
+public class TimeSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,14 +20,17 @@ public class Appointment {
     private Doctor doctor;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
-    @Column(name = "duration", nullable = false)
-    private Duration duration;
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
@@ -40,5 +43,10 @@ public class Appointment {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         createdAt = now;
         updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Timestamp(System.currentTimeMillis());
     }
 }

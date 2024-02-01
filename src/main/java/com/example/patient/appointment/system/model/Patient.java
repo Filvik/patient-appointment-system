@@ -1,5 +1,6 @@
 package com.example.patient.appointment.system.model;
 
+import com.example.patient.appointment.system.enumForTable.GenderEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,13 +22,14 @@ public class Patient {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
     private GenderEnum gender;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "insurance_policy_number", nullable = false)
+    @Column(name = "insurance_policy_number", unique = true, nullable = false)
     private Long insurancePolicyNumber;
 
     @Column(name = "phone_number")
@@ -46,6 +48,9 @@ public class Patient {
         updatedAt = now;
     }
 
-    public Patient() {
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Timestamp(System.currentTimeMillis());
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.patient.appointment.system.model;
 
+import com.example.patient.appointment.system.enumForTable.GenderEnum;
+import com.example.patient.appointment.system.enumForTable.SpecializationEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,11 +22,13 @@ public class Doctor {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
-    private GenderEnum genderEnum;
+    private GenderEnum gender;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "specialization", nullable = false)
-    private String specialization;
+    private SpecializationEnum specialization;
 
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
@@ -38,4 +42,10 @@ public class Doctor {
         createdAt = now;
         updatedAt = now;
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Timestamp(System.currentTimeMillis());
+    }
+
 }

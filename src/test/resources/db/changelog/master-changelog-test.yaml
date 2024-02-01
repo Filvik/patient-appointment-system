@@ -1,0 +1,8 @@
+# Для использования в тестах базу данных PostgreSQL необходимо заменить v1test на v1.
+databaseChangeLog:
+  - include:
+      # v.1.0 create tables
+      file: db/changelog/v1test/v1.0.sql
+  - include:
+      # v.1.1 add check for specializationEnum
+      file: db/changelog/v1test/v1.1.sql

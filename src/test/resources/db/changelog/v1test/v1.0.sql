@@ -1,8 +1,6 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE patients (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+    uuid UUID NOT NULL UNIQUE,
     full_name VARCHAR(255) NOT NULL,
     gender VARCHAR(255) NOT NULL CHECK (gender IN ('MALE', 'FEMALE')),
     date_of_birth DATE NOT NULL,
@@ -14,7 +12,7 @@ CREATE TABLE patients (
 
 CREATE TABLE doctors (
     id BIGSERIAL PRIMARY KEY,
-    uuid UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+    uuid UUID NOT NULL UNIQUE,
     full_name VARCHAR(255) NOT NULL,
     gender VARCHAR(255) NOT NULL CHECK (gender IN ('MALE', 'FEMALE')),
     specialization VARCHAR(255) NOT NULL,
@@ -34,4 +32,3 @@ CREATE TABLE time_slots (
     FOREIGN KEY (doctor_id) REFERENCES doctors(id),
     FOREIGN KEY (patient_id) REFERENCES patients(id)
 );
-
