@@ -1,5 +1,6 @@
 package com.example.patient.appointment.system.service;
 
+import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.repository.PatientRepository;
@@ -72,7 +73,7 @@ class AppointmentServiceTest {
         Long slotNotCorrectId = 10L;
 
         // Предполагается, что слот с slotId занят
-        assertThrows(SlotNotFoundException.class, () -> {
+        assertThrows(SlotIsBusyException.class, () -> {
             appointmentService.bookSlot(slotNotCorrectId, patientIdInDB);
         }, "Должно выброситься исключение, указывающее, что слот уже занят");
     }

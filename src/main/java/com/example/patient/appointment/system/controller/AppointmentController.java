@@ -1,5 +1,7 @@
 package com.example.patient.appointment.system.controller;
 
+import com.example.patient.appointment.system.exception.ConflictFieldException;
+import com.example.patient.appointment.system.exception.EmptyFieldException;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +52,8 @@ public class AppointmentController {
      */
     @PostMapping(value = "/bookSlot/{patientId}")
     @Operation(summary = "Занятие слота времени", tags = "Контроллер занятия слота времени")
-    public TimeSlot bookTimeSlot(@RequestParam Long slotId,
-                                 @PathVariable Long patientId) {
+    public TimeSlot bookTimeSlot(@PathVariable Long patientId,
+                                 @RequestParam Long slotId) {
         log.info("Запрос на занятие слота времени с ID = " + slotId);
         return appointmentService.bookSlot(slotId, patientId);
     }
@@ -74,6 +76,10 @@ public class AppointmentController {
     @Operation(summary = "Запрос всех занятых слотов времени пациентом", tags = "Контроллер получения занятых слотов времени")
     public List<TimeSlot> getBookedSlotsByPatient(@RequestParam Optional<Long> patientId,
                                                   @RequestParam Optional<UUID> patientUuid) {
+        if (patientId.isPresent() && patientUuid.isPresent()) {
+            log.info("Необходимо указать что то одно: ID или UUID пациента");
+            throw new ConflictFieldException("Необходимо указать что то одно: ID или UUID пациента");
+        } else
         if (patientId.isPresent()) {
             log.info("Запрос всех занятых слотов времени для пациента с ID = " + patientId.get());
             return appointmentService.findSlotsByPatientById(patientId.get());
@@ -81,7 +87,8 @@ public class AppointmentController {
             log.info("Запрос всех занятых слотов времени для пациента с UUID = " + patientUuid.get());
             return appointmentService.findSlotsByPatientByUuid(patientUuid.get());
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Необходимо указать ID или UUID пациента");
+            log.info("Необходимо указать ID или UUID пациента");
+            throw new EmptyFieldException("Необходимо указать ID или UUID пациента");
         }
     }
 }

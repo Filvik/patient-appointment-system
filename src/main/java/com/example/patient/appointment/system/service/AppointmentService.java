@@ -1,6 +1,7 @@
 package com.example.patient.appointment.system.service;
 
 import com.example.patient.appointment.system.exception.PatientNotFoundException;
+import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
 import com.example.patient.appointment.system.model.Patient;
 import com.example.patient.appointment.system.model.TimeSlot;
@@ -57,7 +58,7 @@ public class AppointmentService {
      * @param slotId    Идентификатор слота, который нужно забронировать.
      * @param patientId Идентификатор пациента, который забронировал слот.
      * @return Забронированный временной слот.
-     * @throws SlotNotFoundException если слот не найден.
+     * @throws SlotNotFoundException    если слот не найден.
      * @throws IllegalArgumentException если `slotId` или `patientId` являются null.
      * @throws PatientNotFoundException если пациент не найден.
      */
@@ -83,18 +84,22 @@ public class AppointmentService {
             log.info("Слот с ID: {} успешно забронирован", slotId);
         } else {
             log.info("Слот с ID: {} уже был забронирован", slotId);
-            throw new SlotNotFoundException("Слот с ID: " + slotId + " уже был забронирован");
+            throw new SlotIsBusyException("Слот с ID: " + slotId + " уже был забронирован");
         }
         return slot;
     }
 
     /**
-         * Найти слоты, забронированные определенным пациентом.
-         *
-         * @param patientId Уникальный идентификатор пациента.
-         * @return Список временных слотов, забронированных пациентом.
-         */
+     * Найти слоты, забронированные определенным пациентом.
+     *
+     * @param patientId Уникальный идентификатор пациента.
+     * @return Список временных слотов, забронированных пациентом.
+     */
     public List<TimeSlot> findSlotsByPatientById(Long patientId) {
+        if (patientRepository.findById(patientId).isEmpty()) {
+            log.info("Пациент с ID: {} не найден", patientId);
+            throw new PatientNotFoundException("Пациент с ID: " + patientId + " не найден");
+        }
         log.info("Поиск слотов для пациента с patientId: {}", patientId);
         List<TimeSlot> timeSlotEntities = timeSlotRepository.findSlotsByPatientId(patientId);
         if (!timeSlotEntities.isEmpty()) {
@@ -113,6 +118,10 @@ public class AppointmentService {
      * @return Список временных слотов, забронированных пациентом.
      */
     public List<TimeSlot> findSlotsByPatientByUuid(UUID uuid) {
+        if (patientRepository.findByUuid(uuid).isEmpty()) {
+            log.info("Пациент с UUID: {} не найден", uuid);
+            throw new PatientNotFoundException("Пациент с UUID: " + uuid + " не найден");
+        }
         log.info("Поиск слотов для пациента с UUID: {}", uuid);
         List<TimeSlot> timeSlotEntities = timeSlotRepository.findByPatientUuid(uuid);
         if (!timeSlotEntities.isEmpty()) {
