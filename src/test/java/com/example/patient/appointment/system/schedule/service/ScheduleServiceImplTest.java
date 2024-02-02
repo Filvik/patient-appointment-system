@@ -55,5 +55,22 @@ class ScheduleServiceImplTest {
 
         // Проверяем количество созданных слотов
         assertEquals(14, slots.size(), "Количество созданных слотов соответствует ожидаемому");
+
+        request.setDate(null);
+
+        List<TimeSlot> dateNull = scheduleService.createTimeSlots(request);
+
+        // Проверяем количество созданных слотов
+        assertEquals(0, dateNull.size(), "Количество созданных слотов соответствует ожидаемому");
+
+        request.setDate(LocalDate.of(2022, 1, 1));
+
+        // Изменяём ID доктора на несуществующий
+        request.setDoctorId(150L);
+
+        List<TimeSlot> slotNull = scheduleService.createTimeSlots(request);
+
+        // Проверяем количество созданных слотов
+        assertEquals(0, slotNull.size(), "Количество созданных слотов соответствует ожидаемому");
     }
 }
