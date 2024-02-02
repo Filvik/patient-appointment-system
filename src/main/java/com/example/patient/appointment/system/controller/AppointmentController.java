@@ -4,10 +4,10 @@ import com.example.patient.appointment.system.exception.ConflictFieldException;
 import com.example.patient.appointment.system.exception.EmptyFieldException;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.service.AppointmentService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,8 +36,8 @@ public class AppointmentController {
      */
     @GetMapping(value = "/getAvailableSlots/{doctorId}/{date}")
     @Operation(summary = "Запрос свободных слотов времени", tags = "Контроллер свободных слотов времени")
-    public List<TimeSlot> getAvailableSlots(@PathVariable Long doctorId,
-                                            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public List<TimeSlot> getAvailableSlots(@PathVariable @Parameter(description = "Идентификатор доктора") Long doctorId,
+                                            @PathVariable @Parameter(description = "Дата")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("Запрос свободных слотов времени для врача с ID = " + doctorId + " на дату " + date);
         return appointmentService.findAvailableSlots(doctorId, date);
     }
@@ -52,8 +52,8 @@ public class AppointmentController {
      */
     @PostMapping(value = "/bookSlot/{patientId}")
     @Operation(summary = "Занятие слота времени", tags = "Контроллер занятия слота времени")
-    public TimeSlot bookTimeSlot(@PathVariable Long patientId,
-                                 @RequestParam Long slotId) {
+    public TimeSlot bookTimeSlot(@PathVariable @Parameter(description = "Идентификатор доктора")Long patientId,
+                                 @RequestParam @Parameter(description = "Идентификатор слота")Long slotId) {
         log.info("Запрос на занятие слота времени с ID = " + slotId);
         return appointmentService.bookSlot(slotId, patientId);
     }
@@ -74,8 +74,8 @@ public class AppointmentController {
      */
     @GetMapping(value = "/getBookedSlots")
     @Operation(summary = "Запрос всех занятых слотов времени пациентом", tags = "Контроллер получения занятых слотов времени")
-    public List<TimeSlot> getBookedSlotsByPatient(@RequestParam Optional<Long> patientId,
-                                                  @RequestParam Optional<UUID> patientUuid) {
+    public List<TimeSlot> getBookedSlotsByPatient(@RequestParam @Parameter(description = "Идентификатор id пациента") Optional<Long> patientId,
+                                                  @RequestParam @Parameter(description = "Идентификатор uuid доктора") Optional<UUID> patientUuid) {
         if (patientId.isPresent() && patientUuid.isPresent()) {
             log.info("Необходимо указать что то одно: ID или UUID пациента");
             throw new ConflictFieldException("Необходимо указать что то одно: ID или UUID пациента");
