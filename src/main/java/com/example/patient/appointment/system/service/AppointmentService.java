@@ -7,6 +7,7 @@ import com.example.patient.appointment.system.model.Patient;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AppointmentService {
 
     private final TimeSlotRepository timeSlotRepository;
     private final PatientRepository patientRepository;
-
-    public AppointmentService(TimeSlotRepository timeSlotRepository, PatientRepository patientRepository) {
-        this.timeSlotRepository = timeSlotRepository;
-        this.patientRepository = patientRepository;
-    }
 
     /**
      * Найти доступные слоты для заданного врача и даты.
