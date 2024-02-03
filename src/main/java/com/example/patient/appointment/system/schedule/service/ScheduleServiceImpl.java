@@ -5,17 +5,17 @@ import com.example.patient.appointment.system.repository.DoctorRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
 import com.example.patient.appointment.system.schedule.ScheduleRequest;
 import com.example.patient.appointment.system.schedule.ScheduleService;
+import jakarta.jws.WebService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.jws.WebService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@WebService(endpointInterface = "com.example.patient.appointment.system.schedule.ScheduleService")
+@WebService(serviceName = "ScheduleService")
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
 
@@ -31,7 +31,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         final int slotDuration = request.getSlotDurationInMinutes();
         final int breakDuration = request.getBreakForLunchInMinutes();
         final int workingHours = request.getWorkingTimeInHoursInDay();
-        final LocalDate date = request.getDate();
+        final LocalDate date = request.getBookingDate();
         final int totalWorkingMinutes = workingHours * 60;
         final int totalSlots = (totalWorkingMinutes - breakDuration) / slotDuration;
 
@@ -57,7 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             slot.setStartTime(currentTime);
             currentTime = currentTime.plusMinutes(slotDuration);
             slot.setEndTime(currentTime);
-            slot.setDate(request.getDate());
+            slot.setDate(request.getBookingDate());
             slot.setDoctor(doctorOptional.get());
 
             slots.add(slot);

@@ -37,7 +37,7 @@ class ScheduleServiceImplTest {
     void setUp() {
         request = new ScheduleRequest();
         request.setDoctorId(1L);
-        request.setDate(LocalDate.of(2022, 1, 1));
+        request.setBookingDate(LocalDate.of(2022, 1, 1));
         request.setStartWorkTime(LocalTime.of(9, 0));
         request.setSlotDurationInMinutes(30);
         request.setBreakForLunchInMinutes(60);
@@ -56,14 +56,14 @@ class ScheduleServiceImplTest {
         // Проверяем количество созданных слотов
         assertEquals(14, slots.size(), "Количество созданных слотов соответствует ожидаемому");
 
-        request.setDate(null);
+        request.setBookingDate(null);
 
         List<TimeSlot> dateNull = scheduleService.createTimeSlots(request);
 
         // Проверяем количество созданных слотов
         assertEquals(0, dateNull.size(), "Количество созданных слотов соответствует ожидаемому");
 
-        request.setDate(LocalDate.of(2022, 1, 1));
+        request.setBookingDate(LocalDate.of(2022, 1, 1));
 
         // Изменяём ID доктора на несуществующий
         request.setDoctorId(150L);

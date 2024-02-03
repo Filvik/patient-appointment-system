@@ -1,9 +1,9 @@
 package com.example.patient.appointment.system.schedule;
 
 import com.example.patient.appointment.system.model.TimeSlot;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
 import java.util.List;
 
 @WebService
