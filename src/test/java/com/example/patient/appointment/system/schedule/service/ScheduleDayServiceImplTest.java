@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ScheduleServiceImplTest {
+class ScheduleDayServiceImplTest {
 
     @Mock
     private TimeSlotRepository timeSlotRepository;
@@ -29,7 +29,7 @@ class ScheduleServiceImplTest {
     private DoctorRepository doctorRepository;
 
     @InjectMocks
-    private ScheduleServiceImpl scheduleService;
+    private ScheduleDayServiceImpl scheduleService;
 
     private ScheduleRequest request;
 

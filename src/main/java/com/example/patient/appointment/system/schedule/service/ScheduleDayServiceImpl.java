@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @WebService(serviceName = "ScheduleService")
 @RequiredArgsConstructor
-public class ScheduleServiceImpl implements ScheduleService {
+public class ScheduleDayServiceImpl implements ScheduleService {
 
     private final TimeSlotRepository timeSlotRepository;
     private final DoctorRepository doctorRepository;

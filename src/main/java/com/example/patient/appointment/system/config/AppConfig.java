@@ -2,7 +2,8 @@ package com.example.patient.appointment.system.config;
 
 import com.example.patient.appointment.system.repository.DoctorRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
-import com.example.patient.appointment.system.schedule.service.ScheduleServiceImpl;
+import com.example.patient.appointment.system.schedule.service.ScheduleDayServiceImpl;
+import com.example.patient.appointment.system.schedule.service.ScheduleWeekServiceImpl;
 import jakarta.xml.ws.Endpoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +21,24 @@ private final TimeSlotRepository timeSlotRepository;
 private final DoctorRepository doctorRepository;
 
     @Bean
+    public ScheduleDayServiceImpl scheduleDayService() {
+        return new ScheduleDayServiceImpl(timeSlotRepository, doctorRepository);
+    }
+
+    @Bean
+    public ScheduleWeekServiceImpl scheduleWeekService(ScheduleDayServiceImpl scheduleDayService) {
+        return new ScheduleWeekServiceImpl(doctorRepository, scheduleDayService);
+    }
+
+    @Bean
     @Profile("!test")
-    public Endpoint endpoint() {
-        return Endpoint.publish("http://localhost:8090/ScheduleService",
-                new ScheduleServiceImpl(timeSlotRepository, doctorRepository));
+    public Endpoint endPointForDay(ScheduleDayServiceImpl scheduleDayService) {
+        return Endpoint.publish("http://localhost:8090/ScheduleDayService", scheduleDayService);
+    }
+
+    @Bean
+    @Profile("!test")
+    public Endpoint endPointWeek(ScheduleWeekServiceImpl scheduleWeekService) {
+        return Endpoint.publish("http://localhost:8090/ScheduleWeekService", scheduleWeekService);
     }
 }
