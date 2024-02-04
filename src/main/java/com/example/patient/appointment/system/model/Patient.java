@@ -1,6 +1,6 @@
 package com.example.patient.appointment.system.model;
 
-import com.example.patient.appointment.system.enumForTable.GenderEnum;
+import com.example.patient.appointment.system.model.enumForTable.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;

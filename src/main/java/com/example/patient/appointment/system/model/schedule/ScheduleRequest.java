@@ -1,7 +1,7 @@
-package com.example.patient.appointment.system.schedule.request;
+package com.example.patient.appointment.system.model.schedule;
 
-import com.example.patient.appointment.system.schedule.adapter.LocalDateAdapter;
-import com.example.patient.appointment.system.schedule.adapter.LocalTimeAdapter;
+import com.example.patient.appointment.system.adapter.LocalDateAdapter;
+import com.example.patient.appointment.system.adapter.LocalTimeAdapter;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

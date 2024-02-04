@@ -1,4 +1,4 @@
-package com.example.patient.appointment.system.enumForTable;
+package com.example.patient.appointment.system.model.enumForTable;
 
 public enum SpecializationEnum {
     CARDIOLOGIST,
