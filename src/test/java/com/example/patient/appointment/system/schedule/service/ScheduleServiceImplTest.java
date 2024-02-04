@@ -4,7 +4,7 @@ import com.example.patient.appointment.system.model.Doctor;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.repository.DoctorRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
-import com.example.patient.appointment.system.schedule.ScheduleRequest;
+import com.example.patient.appointment.system.schedule.request.ScheduleRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

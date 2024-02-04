@@ -1,4 +1,4 @@
-package com.example.patient.appointment.system.schedule;
+package com.example.patient.appointment.system.schedule.adapter;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
