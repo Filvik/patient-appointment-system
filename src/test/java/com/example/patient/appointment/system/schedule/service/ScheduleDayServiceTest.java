@@ -79,5 +79,22 @@ class ScheduleDayServiceTest {
 
         // Проверяем количество созданных слотов
         assertEquals(0, slotNull.size(), "Количество созданных слотов соответствует ожидаемому");
+
+        request.setDoctorId(1L);
+        // Установка недопустимых дат
+        request.setBookingDate(null);
+
+        List<TimeSlot> slotsWithoutDate = scheduleService.createTimeSlotsForDay(request);
+
+        // Проверяем, что возвращается пустой список
+        assertEquals(0, slotsWithoutDate.size(), "Должен возвращаться пустой список, если даты некорректны");
+
+        // Установка недопустимой продолжительности слота
+        request.setSlotDurationInMinutes(-5);
+
+        List<TimeSlot> slotsWithoutDuration = scheduleService.createTimeSlotsForDay(request);
+
+        // Проверяем, что возвращается пустой список
+        assertEquals(0, slotsWithoutDuration.size(), "Должен возвращаться пустой список при недопустимой продолжительности слота");
     }
 }

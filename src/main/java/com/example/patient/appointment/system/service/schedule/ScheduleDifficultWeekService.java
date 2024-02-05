@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
@@ -42,6 +39,12 @@ public class ScheduleDifficultWeekService {
      */
     @WebMethod
     public List<TimeSlot> createTimeSlotsForDifficultWeek(ScheduleRequestOfWeek request) {
+
+        if ((request.getDateFrom() == null || request.getDateTo() == null) ||
+                request.getDateFrom().isAfter(request.getDateTo())) {
+            log.error("Некорректные данные для создания слотов: {}", request);
+            return Collections.emptyList();
+        }
 
         LocalDate current = request.getDateFrom();
         List<TimeSlot> slots = new ArrayList<>();
@@ -77,7 +80,7 @@ public class ScheduleDifficultWeekService {
      * @param request объект {@link ScheduleRequestOfWeek}, содержащий список запросов на расписание
      *                по дням недели.
      * @return карта, ключом которой является день недели {@link EnumDayOfWeek}, а значением -
-     *         параметры расписания для этого дня {@link ScheduleRequestOfWeek.ScheduleRequestDayOfWeek}.
+     * параметры расписания для этого дня {@link ScheduleRequestOfWeek.ScheduleRequestDayOfWeek}.
      */
     private Map<EnumDayOfWeek, ScheduleRequestOfWeek.ScheduleRequestDayOfWeek> getMapOfDay(ScheduleRequestOfWeek request) {
         Map<EnumDayOfWeek, ScheduleRequestOfWeek.ScheduleRequestDayOfWeek> map = new HashMap<>();

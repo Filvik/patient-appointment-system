@@ -23,6 +23,65 @@
 
 SOAP сервис доступен по следующему адресу WSDL для интеграции и использования: <a href="http://localhost:8090/ScheduleService?wsdl">http://localhost:8090/ScheduleService?wsdl </a>
 
+Пример запроса к SOAP сервису для создания слотов, в рамках заданного периода времени, учитывая день недели:
+```xml
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://schedule.service.system.appointment.patient.example.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sch:createTimeSlotsForDifficultWeek>
+         <!--Optional:-->
+         <arg0>
+            <!--Optional:-->
+            <doctorId>101</doctorId>
+            <!--Optional:-->
+            <dateFrom>2024-01-10</dateFrom>
+            <!--Optional:-->
+            <dateTo>2024-01-20</dateTo>
+            <slotDurationInMinutes>30</slotDurationInMinutes>
+            <!--Zero or more repetitions:-->
+             
+            <scheduleRequestOfDay>
+               <!--Optional:-->
+               <dayOfWeek>MONDAY</dayOfWeek>
+               <!--Optional:-->
+               <scheduleRequest>
+                  <!--Optional:-->
+                  <startWorkTime>01:00:00</startWorkTime>
+                  <breakForLunchInMinutes>60</breakForLunchInMinutes>
+                  <workingTimeInHoursInDay>10</workingTimeInHoursInDay>
+               </scheduleRequest>
+             </scheduleRequestOfDay>
+             
+             <scheduleRequestOfDay>
+               <!--Optional:-->
+               <dayOfWeek>THURSDAY</dayOfWeek>
+               <!--Optional:-->
+               <scheduleRequest>
+                  <!--Optional:-->
+                  <startWorkTime>09:00:00</startWorkTime>
+                  <breakForLunchInMinutes>60</breakForLunchInMinutes>
+                  <workingTimeInHoursInDay>6</workingTimeInHoursInDay>
+               </scheduleRequest>
+             </scheduleRequestOfDay>
+             
+             <scheduleRequestOfDay>
+               <!--Optional:-->
+               <dayOfWeek>WEDNESDAY</dayOfWeek>
+               <!--Optional:-->
+               <scheduleRequest>
+                  <!--Optional:-->
+                  <startWorkTime>12:00:00</startWorkTime>
+                  <breakForLunchInMinutes>60</breakForLunchInMinutes>
+                  <workingTimeInHoursInDay>8</workingTimeInHoursInDay>
+               </scheduleRequest>
+             </scheduleRequestOfDay>
+
+         </arg0>
+      </sch:createTimeSlotsForDifficultWeek>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
+
 <h3>В приложении так же реализовано:</h3>
     <ul>
        <li>Логирование с использованием log4j2</li>

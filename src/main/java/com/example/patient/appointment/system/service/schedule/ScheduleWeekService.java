@@ -1,16 +1,13 @@
 package com.example.patient.appointment.system.service.schedule;
 
 import com.example.patient.appointment.system.model.TimeSlot;
-import com.example.patient.appointment.system.model.schedule.EnumDayOfWeek;
 import com.example.patient.appointment.system.model.schedule.ScheduleRequest;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,52 +19,31 @@ public class ScheduleWeekService {
     private final TimeSlotService timeSlotService;
 
     /**
-     * Сервис для создания временных слотов на прием для каждого дня в указанной неделе.
-     * Данный веб-сервис позволяет генерировать расписание временных слотов на основе запроса, который содержит
-     * параметры необходимые для формирования расписания на определенную неделю.
+     * Генерирует список временных слотов для каждого дня в указанный период на основе единого расписания.
      * <p>
-     * Процесс создания слотов происходит путем итерации по всем дням недели и генерации временных слотов
-     * для каждого дня на основе предоставленных в запросе параметров.
+     * Этот метод принимает {@link ScheduleRequest}, который содержит параметры для генерации временных слотов,
+     * такие как начальная дата недели, продолжительность каждого слота, время обеденного перерыва и общее рабочее время.
+     * Используя эти параметры, метод генерирует и возвращает список временных слотов для каждого дня недели, начиная
+     * с даты, указанной в запросе, и продолжая в течение определенного количества дней.
      * <p>
-     * В конце процесса возвращает список всех сгенерированных временных слотов для удобства последующей обработки или отображения.
+     * Процесс создания слотов включает в себя итерацию по каждому дню в заданном диапазоне дат, генерацию временных слотов
+     * на основе предоставленных параметров для каждого дня, и сбор этих слотов в общий список.
+     * <p>
      *
-     * @param request Объект {@link ScheduleRequest}, содержащий параметры для генерации расписания,
-     *                включая дату начала недели, продолжительность слотов, перерывы и рабочие часы.
-     * @return Список {@link TimeSlot}, содержащий все временные слоты, сгенерированные для каждого дня недели
-     *         на основе предоставленного запроса.
+     * @param request Объект {@link ScheduleRequest} с параметрами для генерации расписания на неделю.
+     * @return Список {@link TimeSlot} с временными слотами для каждого дня в указанной неделе.
      */
     @WebMethod
     public List<TimeSlot> createTimeSlotsForWeek(ScheduleRequest request) {
         List<TimeSlot> slots = new ArrayList<>();
-        for (EnumDayOfWeek dayOfWeek : EnumDayOfWeek.values()) {
-            LocalDate bookingDate = calculateDateForDayOfWeek(request.getBookingDate(), dayOfWeek);
-            request.setBookingDate(bookingDate);
-            List<TimeSlot> dailySlots = timeSlotService.getTimeSlotsForScheduleRequest(request);
-            slots.addAll(dailySlots);
+        LocalDate start = request.getBookingDate();
+        LocalDate end = start.plusDays(7); // Пример для недели
+        while (!start.isAfter(end)) {
+            request.setBookingDate(start);
+            slots.addAll(timeSlotService.getTimeSlotsForScheduleRequest(request));
+            start = start.plusDays(1);
         }
+        timeSlotService.saveAllTimeSlots(slots);
         return slots;
-    }
-
-    /**
-     * Вычисляет дату для указанного дня недели, исходя из опорной даты.
-     * Этот метод позволяет найти ближайший день, соответствующий указанному дню недели, начиная с опорной даты.
-     * <p>
-     * Метод учитывает, что если опорная дата уже соответствует искомому дню недели, то возвращается она сама.
-     * В противном случае, метод ищет следующую дату, которая соответствует указанному дню недели.
-     *
-     * @param referenceDate Опорная дата, с которой начинается поиск.
-     * @param dayOfWeek Целевой день недели, для которого требуется найти дату.
-     * @return {@link LocalDate} - дата, соответствующая искомому дню недели.
-     */
-    private LocalDate calculateDateForDayOfWeek(LocalDate referenceDate, EnumDayOfWeek dayOfWeek) {
-        // Конвертация EnumDayOfWeek в DayOfWeek
-        DayOfWeek targetDayOfWeek = DayOfWeek.valueOf(dayOfWeek.name());
-
-        // Если опорная дата уже соответствует искомому дню недели
-        if (referenceDate.getDayOfWeek() == targetDayOfWeek) {
-            return referenceDate;
-        }
-        // Вычисляем следующий искомый день недели после опорной даты
-        return referenceDate.with(TemporalAdjusters.next(targetDayOfWeek));
     }
 }

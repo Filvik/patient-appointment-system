@@ -3,7 +3,6 @@ package com.example.patient.appointment.system.service;
 import com.example.patient.appointment.system.exception.PatientNotFoundException;
 import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
-import com.example.patient.appointment.system.model.Patient;
 import com.example.patient.appointment.system.model.TimeSlot;
 import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,15 +59,15 @@ public class AppointmentService {
      */
     public TimeSlot bookSlot(Long slotId, Long patientId) {
         if (slotId == null || patientId == null) {
-            log.info("Идентификатор слота и пациента не должны быть null");
-            throw new IllegalArgumentException("Идентификатор слота и пациента не должны быть null");
+            log.info("Идентификатор слота или пациента не должны быть null");
+            throw new IllegalArgumentException("Идентификатор слота или пациента не должны быть null");
         }
 
-        log.info("Бронирование слота с ID: {}", slotId);
         TimeSlot slot = timeSlotRepository.findById(slotId)
                 .orElseThrow(() -> new SlotNotFoundException("Слот с ID: " + slotId + " не найден"));
+        log.info("Бронирование слота с ID: {}", slotId);
 
-        Optional<Patient> patientOpt = patientRepository.findById(patientId);
+        var patientOpt = patientRepository.findById(patientId);
         if (patientOpt.isEmpty()) {
             log.info("Пациент с ID: {} не найден", patientId);
             throw new PatientNotFoundException("Пациент с ID: " + patientId + " не найден");
