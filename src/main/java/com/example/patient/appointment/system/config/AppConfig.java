@@ -1,9 +1,6 @@
 package com.example.patient.appointment.system.config;
 
-import com.example.patient.appointment.system.service.schedule.ScheduleDayService;
-import com.example.patient.appointment.system.service.schedule.ScheduleDifficultWeekService;
-import com.example.patient.appointment.system.service.schedule.ScheduleWeekService;
-import com.example.patient.appointment.system.service.schedule.TimeSlotService;
+import com.example.patient.appointment.system.service.schedule.*;
 import jakarta.xml.ws.Endpoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -89,5 +86,33 @@ public class AppConfig {
     @Profile("!test")
     public Endpoint endPointWeekDifficultWeek(ScheduleDifficultWeekService scheduleServiceOfWeek) {
         return Endpoint.publish("http://localhost:8090/ScheduleDifficultWeekService", scheduleServiceOfWeek);
+    }
+
+    /**
+     * Создает бин сервиса для управления объединенным расписанием.
+     *
+     * @param scheduleDayService           Сервис для управления ежедневным расписанием.
+     * @param scheduleWeekService          Сервис для управления недельным расписанием.
+     * @param scheduleDifficultWeekService Сервис для управления расписанием на сложную неделю.
+     * @return {@link UnifiedScheduleService} сервис для управления объединенным расписанием.
+     */
+
+    @Bean
+    public UnifiedScheduleService unifiedScheduleService(ScheduleDayService scheduleDayService,
+                                                         ScheduleWeekService scheduleWeekService,
+                                                         ScheduleDifficultWeekService scheduleDifficultWeekService) {
+        return new UnifiedScheduleServiceImpl(scheduleDayService, scheduleWeekService, scheduleDifficultWeekService);
+    }
+
+    /**
+     * Создает SOAP эндпоинт для сервиса управления объединенным расписанием.
+     *
+     * @param unifiedScheduleService Сервис для управления объединенным расписанием.
+     * @return {@link Endpoint} - SOAP эндпоинт для сервиса управления объединенным расписанием.
+     */
+    @Bean
+    @Profile("!test")
+    public Endpoint unifiedScheduleServiceEndpoint(UnifiedScheduleService unifiedScheduleService) {
+        return Endpoint.publish("http://localhost:8090/UnifiedScheduleService", unifiedScheduleService);
     }
 }
