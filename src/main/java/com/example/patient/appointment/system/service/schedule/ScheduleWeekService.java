@@ -31,10 +31,9 @@ public class ScheduleWeekService {
      * <p>
      *
      * @param request Объект {@link ScheduleRequest} с параметрами для генерации расписания на неделю.
-     * @return Список {@link TimeSlot} с временными слотами для каждого дня в указанной неделе.
      */
     @WebMethod
-    public List<TimeSlot> createTimeSlotsForWeek(ScheduleRequest request) {
+    public void createTimeSlotsForWeek(ScheduleRequest request) {
         List<TimeSlot> slots = new ArrayList<>();
         LocalDate start = request.getBookingDate();
         LocalDate end = start.plusDays(7); // Пример для недели
@@ -44,6 +43,5 @@ public class ScheduleWeekService {
             start = start.plusDays(1);
         }
         timeSlotService.saveAllTimeSlots(slots);
-        return slots;
     }
 }

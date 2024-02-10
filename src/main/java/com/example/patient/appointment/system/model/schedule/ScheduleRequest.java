@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "ScheduleRequest")
+@XmlRootElement(name = "request")
 @Data
 public class ScheduleRequest {
     private Long doctorId;

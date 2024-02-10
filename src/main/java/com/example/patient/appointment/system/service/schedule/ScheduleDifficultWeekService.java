@@ -35,15 +35,14 @@ public class ScheduleDifficultWeekService {
      * @param request Объект {@link ScheduleRequestOfWeek}, содержащий детальную информацию о расписании для недели,
      *                включая начальную и конечную даты, общую информацию о продолжительности слотов и перерывов,
      *                а также специальные настройки для каждого дня недели.
-     * @return Список {@link TimeSlot} - временных слотов, сгенерированных на основе предоставленного запроса.
      */
     @WebMethod
-    public List<TimeSlot> createTimeSlotsForDifficultWeek(ScheduleRequestOfWeek request) {
+    public void createTimeSlotsForDifficultWeek(ScheduleRequestOfWeek request) {
 
         if ((request.getDateFrom() == null || request.getDateTo() == null) ||
                 request.getDateFrom().isAfter(request.getDateTo())) {
             log.error("Некорректные данные для создания слотов: {}", request);
-            return Collections.emptyList();
+            return;
         }
 
         LocalDate current = request.getDateFrom();
@@ -66,7 +65,6 @@ public class ScheduleDifficultWeekService {
             current = current.plusDays(1);
         }
         timeSlotService.saveAllTimeSlots(slots);
-        return slots;
     }
 
     /**

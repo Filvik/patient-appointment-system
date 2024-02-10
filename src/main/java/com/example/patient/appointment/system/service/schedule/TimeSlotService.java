@@ -56,9 +56,20 @@ public class TimeSlotService {
 
         boolean lunchBreakAdded = false;
         for (int i = 0; i < totalSlots; i++) {
-            if (i == totalSlots / 2 && !lunchBreakAdded) {
-                currentTime = currentTime.plusMinutes(breakDuration);
+            if (!lunchBreakAdded && i == totalSlots / 2) {
+                LocalTime timeAfterBreak = currentTime.plusMinutes(breakDuration);
+                if (timeAfterBreak.isBefore(currentTime) || timeAfterBreak.equals(LocalTime.MIDNIGHT)) {
+                    log.warn("Обеденный перерыв приведет к переходу на следующий день, пропускаем его и все последующие слоты");
+                    break;
+                }
+                currentTime = timeAfterBreak;
                 lunchBreakAdded = true;
+            }
+
+            LocalTime timeAfterSlot = currentTime.plusMinutes(slotDuration);
+            if (timeAfterSlot.isBefore(currentTime) || timeAfterSlot.equals(LocalTime.MIDNIGHT)) {
+                log.warn("Создание слота приведет к переходу на следующий день! Прекращаем создание дальнейших слотов.");
+                break;
             }
 
             TimeSlot slot = new TimeSlot();
