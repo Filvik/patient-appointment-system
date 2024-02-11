@@ -50,7 +50,7 @@ class ScheduleDayServiceTest {
         mockDoctor.setId(1L);
         when(doctorRepository.findById(1L)).thenReturn(Optional.of(mockDoctor));
 
-        TimeSlotService timeSlotService = spy(new TimeSlotService(doctorRepository, timeSlotRepository));
+        TimeSlotService timeSlotService = new TimeSlotService(doctorRepository, timeSlotRepository);
 
         scheduleService = new ScheduleDayService(timeSlotService);
     }
@@ -59,6 +59,9 @@ class ScheduleDayServiceTest {
     void createTimeSlots_ShouldCreateSlots_WhenRequestIsValid() {
 
         List<TimeSlot> slots = scheduleService.createTimeSlotsForDay(request);
+
+        // Проверяем, что метод getTimeSlotsForScheduleRequest вызывается 1 раз
+        verify(doctorRepository, times(1)).findById(request.getDoctorId());
 
         // Проверяем количество созданных слотов
         assertEquals(14, slots.size(), "Количество созданных слотов соответствует ожидаемому");
