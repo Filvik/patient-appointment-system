@@ -7,7 +7,6 @@ import java.time.LocalTime;
 
 @Data
 public class TimeSlotDTO {
-    private Long id;
     private String doctorFullName;
     private String patientFullName;
     private LocalTime startTime;

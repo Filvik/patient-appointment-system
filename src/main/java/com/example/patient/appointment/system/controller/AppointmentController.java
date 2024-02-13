@@ -73,8 +73,8 @@ public class AppointmentController {
      */
     @GetMapping(value = "/getBookedSlots")
     @Operation(summary = "Запрос всех занятых слотов времени пациентом", tags = "Контроллер получения занятых слотов времени")
-    public List<TimeSlot> getBookedSlotsByPatient(@RequestParam @Parameter(description = "Идентификатор id пациента") Optional<Long> patientId,
-                                                  @RequestParam @Parameter(description = "Идентификатор uuid пациента") Optional<UUID> patientUuid) {
+    public List<TimeSlotDTO> getBookedSlotsByPatient(@RequestParam @Parameter(description = "Идентификатор id пациента") Optional<Long> patientId,
+                                                                   @RequestParam @Parameter(description = "Идентификатор uuid пациента") Optional<UUID> patientUuid) {
         if (patientId.isPresent() && patientUuid.isPresent()) {
             log.info("Необходимо указать что то одно: ID или UUID пациента");
             throw new ConflictFieldException("Необходимо указать что то одно: ID или UUID пациента");

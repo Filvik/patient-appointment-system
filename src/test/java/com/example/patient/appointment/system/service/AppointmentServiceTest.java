@@ -85,17 +85,15 @@ class AppointmentServiceTest {
     void findSlotsByPatientByIdTest() {
 
         // Вызываем метод для поиска слотов
-        List<TimeSlot> bookedSlots = appointmentService.findSlotsByPatientById(patientIdInDB);
+        List<TimeSlotDTO> bookedSlots = appointmentService.findSlotsByPatientById(patientIdInDB);
 
         // Проверяем количество найденных слотов
         assertEquals(1, bookedSlots.size(), "Должен быть найден один слот");
 
         // Проверяем, что найденный слот принадлежит указанному пациенту
-        TimeSlot bookedSlot = bookedSlots.get(0);
-        assertEquals(patientIdInDB, bookedSlot.getPatient().getId(), "ID пациента в забронированном слоте должен совпадать с запрашиваемым");
-
+        var bookedSlot = bookedSlots.get(0);
         // Проверяем детали слота
-        assertEquals(Long.valueOf(10), bookedSlot.getId(), "ID забронированного слота должен совпадать");
+        assertEquals("Пациент Петров", bookedSlot.getPatientFullName(), "ФИО пациента должно совпадать");
         assertEquals("11:00", bookedSlot.getStartTime().toString(), "Время начала слота должно совпадать");
         assertEquals("12:00", bookedSlot.getEndTime().toString(), "Время окончания слота должно совпадать");
         assertEquals(LocalDate.of(2024, 1, 1), bookedSlot.getDate(), "Дата слота должна совпадать");
@@ -107,17 +105,18 @@ class AppointmentServiceTest {
         UUID patientUuid = UUID.fromString("5517f51a-ad5f-41d7-870f-450772937437"); // UUID пациента
 
         // Вызываем метод для поиска слотов
-        List<TimeSlot> bookedSlots = appointmentService.findSlotsByPatientByUuid(patientUuid);
+        List<TimeSlotDTO> bookedSlots = appointmentService.findSlotsByPatientByUuid(patientUuid);
 
         // Проверяем количество найденных слотов
         assertEquals(1, bookedSlots.size(), "Должен быть найден один слот");
 
         // Проверяем, что найденный слот принадлежит указанному пациенту
-        TimeSlot bookedSlot = bookedSlots.get(0);
-        assertEquals(patientUuid, bookedSlot.getPatient().getUuid(), "UUID пациента в забронированном слоте должен совпадать с запрашиваемым");
-
+        var bookedSlot = bookedSlots.get(0);
         // Проверяем детали слота
-        assertEquals(Long.valueOf(10), bookedSlot.getId(), "ID забронированного слота должен совпадать");
+        assertEquals("Пациент Петров", bookedSlot.getPatientFullName(), "ФИО пациента должно совпадать");
+        assertEquals("11:00", bookedSlot.getStartTime().toString(), "Время начала слота должно совпадать");
+        assertEquals("12:00", bookedSlot.getEndTime().toString(), "Время окончания слота должно совпадать");
+        assertEquals(LocalDate.of(2024, 1, 1), bookedSlot.getDate(), "Дата слота должна совпадать");
     }
 }
 

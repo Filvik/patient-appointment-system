@@ -1,6 +1,7 @@
 package com.example.patient.appointment.system.service;
 
-import com.example.patient.appointment.system.adapter.TimeSlotConverter;
+import com.example.patient.appointment.system.adapter.TimeSlotConverterCustom;
+import com.example.patient.appointment.system.adapter.TimeSlotConverterWithUseModelMapper;
 import com.example.patient.appointment.system.exception.PatientNotFoundException;
 import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
@@ -10,6 +11,7 @@ import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +27,7 @@ public class AppointmentService {
 
     private final TimeSlotRepository timeSlotRepository;
     private final PatientRepository patientRepository;
+    private final ModelMapper modelMapper;
 
     /**
      * Найти доступные слоты для заданного врача и даты.
@@ -41,7 +44,7 @@ public class AppointmentService {
                 .collect(Collectors.toList());
         if (!timeSlotEntities.isEmpty()) {
             log.info("Доступные слоты для врача с ID: {} на дату: {} были найдены", doctorId, date);
-            return TimeSlotConverter.convertToDTO(timeSlotEntities);
+            return TimeSlotConverterCustom.convertToDTO(timeSlotEntities);
         } else {
             log.info("Доступные слоты для врача с ID: {} на дату: {} не найдены", doctorId, date);
             return Collections.emptyList();
@@ -92,7 +95,7 @@ public class AppointmentService {
      * @param patientId Уникальный идентификатор пациента.
      * @return Список временных слотов, забронированных пациентом.
      */
-    public List<TimeSlot> findSlotsByPatientById(Long patientId) {
+    public List<TimeSlotDTO> findSlotsByPatientById(Long patientId) {
         if (patientRepository.findById(patientId).isEmpty()) {
             log.info("Пациент с ID: {} не найден", patientId);
             throw new PatientNotFoundException("Пациент с ID: " + patientId + " не найден");
@@ -101,7 +104,7 @@ public class AppointmentService {
         List<TimeSlot> timeSlotEntities = timeSlotRepository.findSlotsByPatientId(patientId);
         if (!timeSlotEntities.isEmpty()) {
             log.info("Слоты, забронированные пациентом с patientId: {} были найдены", patientId);
-            return timeSlotEntities;
+            return TimeSlotConverterWithUseModelMapper.convertToDTO(timeSlotEntities);
         } else {
             log.info("Слоты, забронированные пациентом с patientId: {} не найдены", patientId);
             return Collections.emptyList();
@@ -114,7 +117,7 @@ public class AppointmentService {
      * @param uuid Уникальный идентификатор пациента (UUID).
      * @return Список временных слотов, забронированных пациентом.
      */
-    public List<TimeSlot> findSlotsByPatientByUuid(UUID uuid) {
+    public List<TimeSlotDTO> findSlotsByPatientByUuid(UUID uuid) {
         if (patientRepository.findByUuid(uuid).isEmpty()) {
             log.info("Пациент с UUID: {} не найден", uuid);
             throw new PatientNotFoundException("Пациент с UUID: " + uuid + " не найден");
@@ -123,7 +126,7 @@ public class AppointmentService {
         List<TimeSlot> timeSlotEntities = timeSlotRepository.findByPatientUuid(uuid);
         if (!timeSlotEntities.isEmpty()) {
             log.info("Слоты, забронированные пациентом с UUID: {} были найдены", uuid);
-            return timeSlotEntities;
+            return TimeSlotConverterWithUseModelMapper.convertToDTO(timeSlotEntities);
         } else {
             log.info("Слоты, забронированные пациентом с UUID: {} не найдены", uuid);
             return Collections.emptyList();
