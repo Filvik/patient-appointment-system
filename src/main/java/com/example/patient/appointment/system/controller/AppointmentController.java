@@ -3,6 +3,7 @@ package com.example.patient.appointment.system.controller;
 import com.example.patient.appointment.system.exception.ConflictFieldException;
 import com.example.patient.appointment.system.exception.EmptyFieldException;
 import com.example.patient.appointment.system.model.TimeSlot;
+import com.example.patient.appointment.system.model.TimeSlotDTO;
 import com.example.patient.appointment.system.service.AppointmentService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,8 +36,8 @@ public class AppointmentController {
      */
     @GetMapping(value = "/getAvailableSlots/{doctorId}/{date}")
     @Operation(summary = "Запрос свободных слотов времени", tags = "Контроллер свободных слотов времени")
-    public List<TimeSlot> getAvailableSlots(@PathVariable @Parameter(description = "Идентификатор доктора") Long doctorId,
-                                            @PathVariable @Parameter(description = "Дата")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public List<TimeSlotDTO> getAvailableSlots(@PathVariable @Parameter(description = "Идентификатор доктора") Long doctorId,
+                                               @PathVariable @Parameter(description = "Дата")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("Запрос свободных слотов времени для врача с ID = " + doctorId + " на дату " + date);
         return appointmentService.findAvailableSlots(doctorId, date);
     }
@@ -52,7 +52,7 @@ public class AppointmentController {
      */
     @PostMapping(value = "/bookSlot/{patientId}")
     @Operation(summary = "Занятие слота времени", tags = "Контроллер занятия слота времени")
-    public TimeSlot bookTimeSlot(@PathVariable @Parameter(description = "Идентификатор доктора")Long patientId,
+    public TimeSlot bookTimeSlot(@PathVariable @Parameter(description = "Идентификатор пациента")Long patientId,
                                  @RequestParam @Parameter(description = "Идентификатор слота")Long slotId) {
         log.info("Запрос на занятие слота времени с ID = " + slotId);
         return appointmentService.bookSlot(slotId, patientId);
@@ -61,7 +61,6 @@ public class AppointmentController {
     /**
      * Получает список всех занятых временных слотов для пациента.
      * Этот метод предоставляет возможность поиска занятых слотов по ID или UUID пациента(ID является приоритетным).
-     * Если оба параметра отсутствуют, метод возвращает ошибку HTTP 400 Bad Request.
      *
      * @param patientId  Необязательный параметр для идентификации пациента по его ID.
      *                   Если этот параметр предоставлен, метод ищет слоты, связанные с этим ID.
@@ -69,8 +68,8 @@ public class AppointmentController {
      *                    Если этот параметр предоставлен, метод ищет слоты, связанные с этим UUID.
      * @return Список {@link TimeSlot} объектов, представляющих занятые временные слоты пациента.
      *         Возвращает пустой список, если занятые слоты не найдены.
-     * @throws ResponseStatusException если оба параметра (patientId и patientUuid) отсутствуют,
-     *                                 возвращает ошибку с кодом HTTP 400 Bad Request.
+     * @throws ConflictFieldException если оба параметра предоставлены.
+     * @throws EmptyFieldException если ни один из параметров не предоставлен.
      */
     @GetMapping(value = "/getBookedSlots")
     @Operation(summary = "Запрос всех занятых слотов времени пациентом", tags = "Контроллер получения занятых слотов времени")

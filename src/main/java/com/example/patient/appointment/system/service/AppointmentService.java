@@ -1,9 +1,11 @@
 package com.example.patient.appointment.system.service;
 
+import com.example.patient.appointment.system.adapter.TimeSlotConverter;
 import com.example.patient.appointment.system.exception.PatientNotFoundException;
 import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
 import com.example.patient.appointment.system.model.TimeSlot;
+import com.example.patient.appointment.system.model.TimeSlotDTO;
 import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class AppointmentService {
      * @param date     Дата, на которую нужно найти слоты.
      * @return Список доступных временных слотов.
      */
-    public List<TimeSlot> findAvailableSlots(Long doctorId, LocalDate date) {
+    public List<TimeSlotDTO> findAvailableSlots(Long doctorId, LocalDate date) {
         log.info("Поиск доступных слотов для врача с ID: {} на дату: {}", doctorId, date);
         List<TimeSlot> timeSlotEntities = timeSlotRepository.findByDoctorIdAndDate(doctorId, date)
                 .stream()
@@ -39,7 +41,7 @@ public class AppointmentService {
                 .collect(Collectors.toList());
         if (!timeSlotEntities.isEmpty()) {
             log.info("Доступные слоты для врача с ID: {} на дату: {} были найдены", doctorId, date);
-            return timeSlotEntities;
+            return TimeSlotConverter.convertToDTO(timeSlotEntities);
         } else {
             log.info("Доступные слоты для врача с ID: {} на дату: {} не найдены", doctorId, date);
             return Collections.emptyList();

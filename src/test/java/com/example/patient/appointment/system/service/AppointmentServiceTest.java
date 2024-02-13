@@ -3,6 +3,7 @@ package com.example.patient.appointment.system.service;
 import com.example.patient.appointment.system.exception.SlotIsBusyException;
 import com.example.patient.appointment.system.exception.SlotNotFoundException;
 import com.example.patient.appointment.system.model.TimeSlot;
+import com.example.patient.appointment.system.model.TimeSlotDTO;
 import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
 import org.junit.jupiter.api.Test;
@@ -43,17 +44,16 @@ class AppointmentServiceTest {
         Long doctorId = 101L; // ID врача из тестовых данных
         LocalDate date = LocalDate.of(2024, 1, 1);
 
-        List<TimeSlot> result = appointmentService.findAvailableSlots(doctorId, date);
+        List<TimeSlotDTO> result = appointmentService.findAvailableSlots(doctorId, date);
 
         // Проверяем, что результат содержит ровно 2 доступных слота
         assertEquals(2, result.size(), "Должно быть найдено 2 доступных слота для врача с ID 101");
 
         // Проверяем, что все возвращаемые слоты соответствуют заданным критериям
         assertTrue(result.stream().allMatch(slot ->
-                slot.getDoctor().getId().equals(doctorId) &&
-                        slot.getDate().equals(date)), "Все найденные слоты должны быть доступны и не забронированы");
+                slot.getDoctorFullName().equals("Доктор Иванова") &&
+                        slot.getDate().equals(date)), "Все найденные слоты должны соответствовать заданному врачу и дате");
     }
-
 
     @Test
     void bookAvailableSlot() {
