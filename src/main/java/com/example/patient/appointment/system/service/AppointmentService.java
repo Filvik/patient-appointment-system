@@ -11,8 +11,10 @@ import com.example.patient.appointment.system.repository.PatientRepository;
 import com.example.patient.appointment.system.repository.TimeSlotRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -27,7 +29,6 @@ public class AppointmentService {
 
     private final TimeSlotRepository timeSlotRepository;
     private final PatientRepository patientRepository;
-    private final ModelMapper modelMapper;
 
     /**
      * Найти доступные слоты для заданного врача и даты.
@@ -62,6 +63,7 @@ public class AppointmentService {
      * @throws IllegalArgumentException если `slotId` или `patientId` являются null.
      * @throws PatientNotFoundException если пациент не найден.
      */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public TimeSlot bookSlot(Long slotId, Long patientId) {
         if (slotId == null || patientId == null) {
             log.info("Идентификатор слота или пациента не должны быть null");
@@ -132,4 +134,5 @@ public class AppointmentService {
             return Collections.emptyList();
         }
     }
+
 }
