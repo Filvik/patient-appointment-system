@@ -5,3 +5,6 @@ databaseChangeLog:
   - include:
       # v.1.1 add check for specializationEnum
       file: db/changelog/v1/v1.1.sql
+  - include:
+      # v.1.2 add unique constraint for time_slots
+      file: db/changelog/v1/v1.2.sql

@@ -9,7 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "time_slots")
+@Table(name = "time_slots", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"doctor_id", "date", "start_time"})
+})
 @Data
 public class TimeSlot {
 
